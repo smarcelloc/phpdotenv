@@ -37,7 +37,7 @@ jobs:
         run: composer install --no-interaction --no-progress
 
       - name: Run test suite
-        run: composer run-script test:verbose
+        run: composer run-script test
 
   windows_tests:
     runs-on: windows-2019
@@ -73,4 +73,4 @@ jobs:
         run: composer install --no-interaction --no-progress
 
       - name: Run test suite
-        run: composer run-script test:verbose
+        run: composer run-script test
