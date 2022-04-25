@@ -57,4 +57,28 @@ class EnvLoadTest extends TestCase
         $this->assertArrayNotHasKey('LOG_CHANNEL', $_ENV);
         $this->assertArrayNotHasKey('LOG_DEPRECATIONS_CHANNEL', $_ENV);
     }
+
+    /**
+     * Test if the load method is located in a custom dotenv file.
+     *
+     * @return void
+     */
+    public function test_load_file_env()
+    {
+        Env::load(__DIR__ . '/mocks/.env.testing');
+        $this->assertSame('testing', $_ENV['APP_ENV']);
+    }
+
+    /**
+     * Test if loading file dotenv empty.
+     *
+     * @return void
+     */
+    public function test_load_file_env_empty()
+    {
+        $_ENV = ['NAME' => 'John Joy', 'EMAIL' => 'john@mail.com'];
+
+        Env::load(__DIR__ . '/mocks/.env.empty');
+        $this->assertSame([], $_ENV);
+    }
 }

@@ -12,7 +12,9 @@ class Env
      */
     public static function load(string $filename)
     {
-        $filename .= '/.env';
+        if (is_dir($filename)) {
+            $filename .= '/.env';
+        }
 
         $content = file_get_contents($filename);
 
