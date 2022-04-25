@@ -3,6 +3,7 @@
 namespace Dotenv\Test;
 
 use Dotenv\Env;
+use Dotenv\Exceptions\FileNotFoundException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -80,5 +81,34 @@ class EnvLoadTest extends TestCase
 
         Env::load(__DIR__ . '/mocks/.env.empty');
         $this->assertSame([], $_ENV);
+    }
+
+    /**
+     * Test if the load method returns an exception when not finding the dotenv file.
+     *
+     * @return void
+     */
+    public function test_failure_when_not_found_file_env()
+    {
+        $filename = __DIR__ . '.env.custom';
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage("This file was not found '{$filename}'");
+
+        Env::load($filename);
+    }
+
+    /**
+     * Test if the load method returns an exception when not finding the dotenv file
+     * contains in directory.
+     *
+     * @return void
+     */
+    public function test_failure_when_not_found_file_env_contains_in_directory()
+    {
+        $directory = __DIR__;
+        $this->expectException(FileNotFoundException::class);
+        $this->expectExceptionMessage("This file was not found '{$directory}/.env'");
+
+        Env::load($directory);
     }
 }

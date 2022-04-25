@@ -2,12 +2,17 @@
 
 namespace Dotenv;
 
+use Dotenv\Exceptions\FileNotFoundException;
+use Dotenv\Exceptions\FileNotReadException;
+
 class Env
 {
     /**
      * Load environment variables with dotenv file.
      *
      * @param string $filename
+     * @throws FileNotFoundException
+     * @throws FileNotReadException
      * @return void
      */
     public static function load(string $filename)
@@ -16,7 +21,15 @@ class Env
             $filename .= '/.env';
         }
 
+        if (!is_file($filename)) {
+            throw new FileNotFoundException("This file was not found '{$filename}'");
+        }
+
         $content = file_get_contents($filename);
+
+        if ($content === false) {
+            throw new FileNotReadException("Could not read this file '{$filename}'.");
+        }
 
         $_ENV = self::parse($content);
     }
