@@ -1,0 +1,60 @@
+{
+  "name": "smarcelloc/dotenv",
+  "description": "Load environment variables in PHP",
+  "keywords": [
+    "dotenv",
+    "env",
+    "environment",
+    "variable"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/smarcelloc/dotenv",
+  "support": {
+    "source": "https://github.com/smarcelloc/dotenv",
+    "issues": "https://github.com/smarcelloc/dotenv/issues"
+  },
+  "authors": [
+    {
+      "name": "Marcello Silvério",
+      "homepage": "https://github.com/smarcelloc"
+    }
+  ],
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "config": {
+    "vendor-dir": "vendor",
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "lock": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Dotenv\\": [
+        "src/"
+      ]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Dotenv\\Test\\": [
+        "tests/"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit",
+    "analyze": "./vendor/bin/phpstan analyze --level max --memory-limit=-1 src"
+  },
+  "scripts-descriptions": {
+    "test": "Run test automation.",
+    "analyze": "Finding bugs in your code."
+  },
+  "require": {
+    "php": "^7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.5",
+    "phpstan/phpstan": "^0.9"
+  }
+}
