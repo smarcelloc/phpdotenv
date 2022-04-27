@@ -45,7 +45,7 @@ class Env
     {
         $patternKey = '^(?:(?!\n)\s)*(\w*)(?:(?!\n)\s)*';
         $patternValue = '(?:(?!\n)\s)*("(?:[^"\\\\]|\\\\.|\n)*"|[^\s#]*)';
-        $pattern = '/' . $patternKey . '=' . $patternValue . '/m';
+        $pattern = '/' . $patternKey . '=' . $patternValue . '/mu';
 
         $envVariables = [];
 
@@ -55,7 +55,7 @@ class Env
             $envVariables = array_combine($keys, $values);
         }
 
-        return $envVariables;
+        return self::mapLinkEnv($envVariables);
     }
 
     /**
@@ -80,7 +80,73 @@ class Env
                 return null;
 
             default:
-                return trim($valueEnv, '"');
+                return $valueEnv;
         }
+    }
+
+    /**
+     * Seek to link the environment variables. When variable value is 
+     * "$NAME_VAR$", it will be linked with NAME_VAR variable.
+     * 
+     * @param array $envVariables
+     * @return array
+     */
+    protected static function mapLinkEnv(array $envVariables)
+    {
+        if (count($envVariables) <= 1) {
+            return $envVariables;
+        }
+
+        foreach ($envVariables as $key => $value) {
+            if (!is_string($value)) {
+                continue;
+            }
+
+            $value = self::getLinkEnvValue($envVariables, $value);
+            $envVariables[$key] = self::sanitizeEnvValue($value);
+        }
+
+        return $envVariables;
+    }
+
+    /**
+     * @param array $envVariables
+     * @param string $value
+     * @return string|bool|null
+     */
+    private static function getLinkEnvValue(array $envVariables, string $value)
+    {
+        if (mb_ereg('"(.*)\${(\w+)}(.*)"', $value, $matches)) {
+            if (!isset($envVariables[$matches[2]])) {
+                return $value;
+            }
+
+            $valueOtherVariable = $envVariables[$matches[2]] ?? $value;
+
+            if ($matches[1] || $matches[3]) {
+                return strval($matches[1]) . strval($valueOtherVariable) . strval($matches[3]);
+            }
+
+            return $valueOtherVariable;
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param string|bool|null $value
+     * @return string|bool|null
+     */
+    private static function sanitizeEnvValue($value)
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        if (mb_ereg('^"(.*)"$', $value, $matches)) {
+            $value = $matches[1];
+        }
+
+        return mb_ereg_replace('\\\\"', '"', $value);
     }
 }

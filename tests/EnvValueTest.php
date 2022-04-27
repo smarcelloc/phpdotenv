@@ -86,15 +86,26 @@ class EnvValueTest extends TestCase
         $this->assertSame('hello@example.com', $_ENV['MAIL_FROM_ADDRESS']);
     }
 
-    // /**
-    //  * Undocumented function
-    //  *
-    //  * @return void
-    //  */
-    // public function test_env_return_the_value_other_variable()
-    // {
-    //     $this->assertSame($_ENV['APP_NAME'] . " is \"framework\"", $_ENV['MAIL_FROM_NAME']);
-    //     $this->assertSame($_ENV['PUSHER_APP_KEY'], $_ENV['MIX_PUSHER_APP_KEY']);
-    //     $this->assertSame($_ENV['PUSHER_APP_CLUSTER'], $_ENV['MIX_PUSHER_APP_CLUSTER']);
-    // }
+    /**
+     * Test if the environment variable is linked to another variable.
+     *
+     * @return void
+     */
+    public function test_env_return_the_value_other_variable()
+    {
+        $this->assertSame($_ENV['PUSHER_APP_KEY'], $_ENV['MIX_PUSHER_APP_KEY']);
+        $this->assertSame($_ENV['PUSHER_APP_CLUSTER'], $_ENV['MIX_PUSHER_APP_CLUSTER']);
+        $this->assertSame($_ENV['APP_NAME'] . " is \"framework\"", $_ENV['MAIL_FROM_NAME']);
+    }
+
+    /**
+     * Test if environment variable does not identify link
+     * with another variable.
+     *
+     * @return void
+     */
+    public function test_load_return_the_value_other_variable_not_identical()
+    {
+        $this->assertSame('${NOT_EXISTS}', $_ENV['AWS_ACCESS_KEY_ID']);
+    }
 }
